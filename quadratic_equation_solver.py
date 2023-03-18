@@ -1,36 +1,51 @@
 import tkinter as tk
 from tkinter import messagebox
 
-# Функция для решения квадратного уравнения
-def solve():
-    # Получение коэффициентов из полей ввода
+def get_coefficients():
     a = entry_a.get()
     b = entry_b.get()
     c = entry_c.get()
+    return a, b, c
 
-    # Проверка на правильность введенных данных
+def check_coefficients(a, b, c):
     if not a or not b or not c:
         messagebox.showerror("Ошибка", "Введите значения всех коэффициентов")
-        return
+        return False
     try:
         a = float(a)
         b = float(b)
         c = float(c)
     except ValueError:
         messagebox.showerror("Ошибка", "Некорректный ввод. Введите числа")
-        return
+        return False
+    return a, b, c
 
-    # Решение уравнения
+
+def solve_equation(a, b, c):
     discriminant = b**2 - 4*a*c
     if discriminant < 0:
-        label_solution.configure(text="Корней нет")
+        return "Корней нет"
     elif discriminant == 0:
         x = -b / (2*a)
-        label_solution.configure(text=f"Один корень: x={x}")
+        return f"Один корень: x={x}"
     else:
         x1 = (-b + discriminant**0.5) / (2*a)
         x2 = (-b - discriminant**0.5) / (2*a)
-        label_solution.configure(text=f"Два корня: x1={x1}, x2={x2}")
+        return f"Два корня: x1={x1}, x2={x2}"
+
+
+def update_solution(solution):
+    label_solution.configure(text=solution)
+
+# Функция для решения квадратного уравнения
+def solve():
+    a, b, c = get_coefficients()
+    result = check_coefficients(a, b, c)
+    if result:
+        a, b, c = result
+        solution = solve_equation(a, b, c)
+        update_solution(solution)
+
 
 # Создание главного окна
 root = tk.Tk()
